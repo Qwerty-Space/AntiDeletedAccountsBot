@@ -13,4 +13,4 @@ async def on_start(event):
     print((await event.client.get_me()).first_name)
     if event.is_private:    # If command was sent in private
         await log(event)    # Logs the event
-        await event.respond('This is a bot for silly replies.  See /help for a list of commands.')
+        await event.respond('This is a bot for kicking deleted accounts from groups.  See /help for more info.')
