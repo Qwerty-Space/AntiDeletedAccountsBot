@@ -112,6 +112,9 @@ venv.bak/
 
 # Spyder project settings
 .spyderproject
+
+# Config
+config.ini
 .spyproject
 
 # Rope project settings
