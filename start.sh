@@ -1,4 +1,4 @@
 #!/bin/bash
-# Start tanyabot
+# Start AntiDeletedAccountsBot
 
-screen -dmS tanyabot python3 bot.py
+screen -dmS AntiDeletedAccountsBot python3 bot.py
