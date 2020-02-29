@@ -1,6 +1,4 @@
-"""Automatically kick deleted accounts
-
-Will check periodically on new message for deleted accounts, and then kick them.
+"""See kick statistics
 """
 
 from telethon import client, events, sessions, errors
