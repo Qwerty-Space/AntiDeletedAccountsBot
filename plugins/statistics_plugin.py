@@ -1,6 +1,6 @@
-"""Automatically kick deleted accounts
+"""See kick statistics
 
-Will check periodically on new message for deleted accounts, and then kick them.
+pattern:  `/stat(s|istics)?$`
 """
 
 from telethon import client, events
