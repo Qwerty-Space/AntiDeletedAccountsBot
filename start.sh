@@ -1,4 +1,4 @@
 #!/bin/bash
 # Start AntiDeletedAccountsBot
 
-screen -dmS AntiDeletedAccountsBot python3 bot.py
+tmux new -s AntiDeletedAccountsBot "python3 bot.py 2>&1 | tee log.txt"
