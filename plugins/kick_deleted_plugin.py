@@ -21,6 +21,7 @@ async def kick_deleted(event):
     group = await event.get_chat() # Get group object
     kicked_users = 0
 
+    response = None
     async for user in event.client.iter_participants(group.id): # iterate over group members
         if not user.deleted: #  If it's a deleted account; kick
             continue
