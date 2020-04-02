@@ -16,9 +16,9 @@ async def log(event, info=""):
     sender = await event.get_sender()
     # Get the name of the command sent to the bot:
     command = inspect.currentframe().f_back.f_code.co_name
-    if sender and not event.is_channel: # Omit channels
+    if sender and event.is_group or event.is_private: # Omit channels
         logging.info(f"""[{event.date.strftime('%c')}]:
-        [{sender_id}]@[{event.chat_id}] {sender.first_name}@{sender.username}: {command}
+        [{event.sender_id}]@[{event.chat_id}] {sender.first_name}@{sender.username}: {command}
         {info}""".rstrip())
     else:
         logging.info(f"""[{event.date.strftime('%c')}]:
