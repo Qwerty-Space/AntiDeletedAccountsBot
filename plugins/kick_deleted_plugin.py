@@ -35,7 +35,7 @@ async def kick_deleted(event):
         except errors.UserAdminInvalidError:
             response = await event.respond("UserAdminInvalidError:  "
                                             + "One of the admins has deleted their account, so I cannot kick it from the group.")
-    sleep(60)
+    await sleep(60)
     response.delete()
 
     if kicked_users < 0:
