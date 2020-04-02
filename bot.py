@@ -64,6 +64,14 @@ help_message = f"""**List of functions:**
 Do `/help <command>` to learn more about it.
 """
 
+
+try: # Make sure the counter file doesn't already exist, otherwise create it
+    with open("kick_counter.txt", "x"):
+        logging.info("Kick counter file created")
+except FileExistsError:
+    pass
+
+
 @client.on(events.NewMessage(pattern=r"^/help(?: (\S+))?$"))
 async def help(event):
     if event.is_private:
@@ -72,6 +80,7 @@ async def help(event):
             await event.respond(plugin_dict[event.pattern_match.group(1)], link_preview=False)
         except:
             await event.respond(help_message, link_preview=False)
+
 
 try:
     client.start(bot_token=token)

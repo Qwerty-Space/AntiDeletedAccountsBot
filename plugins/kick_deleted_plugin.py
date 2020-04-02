@@ -42,12 +42,6 @@ async def kick_deleted(event):
         return
     await log(event, f"Kicked {kicked_users}")
 
-    try: # Make sure the counter file doesn't already exist, otherwise create it
-        with open(kick_counter, "x"):
-            print("Kick counter file created")
-    except FileExistsError:
-        pass
-
     with open(kick_counter) as f: # Get the old value of kicked deleted accounts
         old_kicked = f.read()
         if not old_kicked:
