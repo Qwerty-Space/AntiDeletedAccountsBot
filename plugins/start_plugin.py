@@ -5,7 +5,7 @@ pattern: `/start$`
 
 from asyncio import sleep
 from .global_functions import log
-from telethon import client, events
+from telethon import client, events, errors
 
 
 # /start
@@ -25,7 +25,9 @@ async def on_start(event):
 async def added_to_group(event):
     group = await event.get_chat() # Get group object
     me = (await event.client.get_me()).id
+    await log(event)
 
+    response = None
     for u in event.users:
         if me == u.id:
             response = await event.respond(
@@ -33,7 +35,9 @@ async def added_to_group(event):
                 + "[Bot support](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/issues)\n"
                 + "This message will self destruct",
                 link_preview=False)
-            return
+
+    if not response:
+        return
 
     await sleep(60)
     try:
