@@ -52,7 +52,7 @@ async def kick_deleted(event):
     if not response:
         return
 
-    await sleep(5)
+    await sleep(60)
     try:
         for m in response:
             await m.delete()
