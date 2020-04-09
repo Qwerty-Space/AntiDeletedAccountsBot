@@ -3,8 +3,9 @@
 pattern: `/start$`
 """
 
-from telethon import client, events
+from asyncio import sleep
 from .global_functions import log
+from telethon import client, events
 
 
 # /start
@@ -17,3 +18,25 @@ async def on_start(event):
             "It requires the `ban user` permission in groups, any permission in channels.  " +
             "See /help for more info."
 )
+
+
+# Reply when added to group
+@events.register(events.ChatAction(func=lambda e:e.user_added and e.is_group))
+async def added_to_group(event):
+    group = await event.get_chat() # Get group object
+    me = (await event.client.get_me()).id
+
+    for u in event.users:
+        if me == u.id:
+            response = await event.respond(
+                "I will check for deleted accounts in active groups once an hour.\n"
+                + "[Bot support](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/issues)"
+                + "This message will self destruct",
+                link_preview=False)
+            return
+
+    await sleep(60)
+    try:
+        await response.delete()
+    except errors.ChannelPrivateError:
+        return
