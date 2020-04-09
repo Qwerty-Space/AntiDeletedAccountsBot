@@ -19,8 +19,6 @@ async def kick_deleted(event):
     kicked_users = 0
 
     response = list()
-    response.append(await event.respond("Hi"))
-    # await event.client.kick_participant(group, "me")
     async for user in event.client.iter_participants(group.id): # iterate over group members
         if not user.deleted: #  If it's a deleted account; kick
             continue
@@ -28,15 +26,19 @@ async def kick_deleted(event):
             await event.client.kick_participant(group, user)
             kicked_users += 1
         except errors.ChatAdminRequiredError:
-            response.append(await event.respond("ChatAdminRequiredError:  "
-                                            + "I must have the ban user permission to be able to kick deleted accounts."))
+            response.append(await event.respond(
+                                "ChatAdminRequiredError:  "
+                                + "I must have the ban user permission to be able to kick deleted accounts."
+                                + "Please add me back as an admin."))
             await log(event, "Invalid permissions")
+            await event.client.kick_participant(group, me)
             break
         except errors.UserAdminInvalidError:
-            response.append(await event.respond("UserAdminInvalidError:  "
-                                            + "One of the admins has deleted their account, so I cannot kick it from the group."))
+            response.append(await event.respond(
+                                "UserAdminInvalidError:  "
+                                + "One of the admins has deleted their account, so I cannot kick it from the group."))
 
-    if kicked_users > 0:
+    if kicked_users >= 0:
         await log(event, f"Kicked {kicked_users}")
 
     with open(kick_counter) as f: # Get the old value of kicked deleted accounts
