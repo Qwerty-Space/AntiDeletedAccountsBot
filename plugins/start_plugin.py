@@ -17,8 +17,8 @@ async def on_start(event):
             "This is a bot for kicking deleted accounts from groups.  "
             + "It requires the `ban user` permission in groups, and any permission in channels.\n\n"
             + "[Bot support](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/issues)\n"
-            + "See /help for more info."
-)
+            + "See /help for more info.",
+            link_preview=False)
 
 
 # Reply when added to group
@@ -32,7 +32,7 @@ async def added_to_group(event):
         if me == u.id:
             response = await event.respond(
                 "I will check for deleted accounts in active groups once an hour.\n"
-                + "[Bot support](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/issues)\n"
+                + "[Bot support](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/issues)\n",
                 link_preview=False)
 
     if not response:
