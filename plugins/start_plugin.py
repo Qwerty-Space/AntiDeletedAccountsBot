@@ -25,7 +25,6 @@ async def on_start(event):
 async def added_to_group(event):
     group = await event.get_chat() # Get group object
     me = (await event.client.get_me()).id
-    await log(event)
 
     response = None
     for u in event.users:
