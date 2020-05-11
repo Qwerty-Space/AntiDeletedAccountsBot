@@ -13,7 +13,7 @@ kick_counter = "kick_counter.txt"
 
 
 @events.register(events.NewMessage(func=lambda e: not e.is_private))
-@cooldown(60 * 60 * 60, False) # Only activate at minimum once an hour
+@cooldown(60 * 60, False) # Only activate at minimum once an hour
 async def kick_deleted(event):
     group = await event.get_chat() # Get group object
     kicked_users = 0
