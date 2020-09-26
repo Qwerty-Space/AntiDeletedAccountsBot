@@ -31,7 +31,7 @@ async def kick_deleted(event):
                                 + "I must have the ban user permission to be able to kick deleted accounts."
                                 + "Please add me back as an admin."))
             await log(event, "Invalid permissions")
-            await event.client.kick_participant(group, me)
+            await event.client.kick_participant(group, "me")
             break
         except errors.UserAdminInvalidError:
             response.append(await event.respond(
