@@ -6,10 +6,10 @@ Will check active groups/channels periodically for deleted accounts, and then ki
 from telethon import client, events, sessions, errors
 from .global_functions import log, cooldown
 from asyncio import sleep
-import sqlite3
 
 
 kick_counter = "kick_counter.txt"
+deleted_admin = set()
 
 
 @events.register(events.NewMessage(func=lambda e: not e.is_private))
@@ -21,6 +21,8 @@ async def kick_deleted(event):
     response = list()
     async for user in event.client.iter_participants(group.id): # iterate over group members
         if not user.deleted: #  If it's a deleted account; kick
+            continue
+        if user.id in deleted_admin:
             continue
         try:
             await event.client.kick_participant(group, user)
@@ -34,6 +36,7 @@ async def kick_deleted(event):
             await event.client.kick_participant(group, "me")
             break
         except errors.UserAdminInvalidError:
+            deleted_admin.add(user.id)
             response.append(await event.respond(
                                 "UserAdminInvalidError:  "
                                 + "An admin has deleted their account, so I cannot kick it from the group."))
