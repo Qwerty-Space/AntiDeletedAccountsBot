@@ -6,11 +6,6 @@ import asyncio
 import time
 
 
-# Probability
-def probability(percent):
-    outcome = random() < percent
-    return outcome
-
 # Logging
 async def log(event, info=""):
     sender = await event.get_sender()
