@@ -25,7 +25,14 @@ hash = "11223344556677889900AABBCCDDEEFF"  # API Hash
 admins = 12346789  # Any "admins" for the bot that will be able to reload the plugins
 ```
 
-4.  Run the bot with `start.sh`
+4.  Clone ADAB
+
+```sh
+cd botplugins
+git clone https://github.com/Qwerty-Space/AntiDeletedAccountsBot.git
+```
+
+5.  Run `python stdbot.py`
 
 
 ## FAQ
@@ -41,5 +48,8 @@ admins = 12346789  # Any "admins" for the bot that will be able to reload the pl
 
 *  Yes.  It doesn't matter what permission you give it in broadcast channels, all channel admins have the permission to kick/ban.
 
+4.  How do I run it persistently, or in the background?
+
+*  Use something like tmux: `tmux new -ds AntiDeletedAccountsBot "python3 stdbot.py"`
 
 See running example on Telegram [@AntiDeletedAccounts_Bot](https://t.me/AntiDeletedAccounts_Bot)
