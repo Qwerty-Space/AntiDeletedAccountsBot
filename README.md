@@ -29,7 +29,7 @@ admins = 12346789  # Any "admins" for the bot that will be able to reload the pl
 
 ```sh
 cd botplugins
-git clone https://github.com/Qwerty-Space/AntiDeletedAccountsBot.git
+git clone https://github.com/Qwerty-Space/AntiDeletedAccountsBot.git AntiDeletedAccountsBot
 ```
 
 5.  Run `python stdbot.py`
