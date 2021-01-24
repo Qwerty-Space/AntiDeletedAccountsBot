@@ -11,7 +11,7 @@ Based on [uniborg](Qwerty-Space/uniborg), a pluggable
 1.  Clone uniborg
 
 ```sh
-git clone https://github.com/Qwerty-Space/uniborg.git
+git clone https://github.com/Qwerty-Space/uniborg.git AntiDeletedAccountsBot
 cd uniborg
 ```
 
@@ -29,7 +29,7 @@ admins = 12346789  # Any "admins" for the bot that will be able to reload the pl
 
 ```sh
 cd botplugins
-git clone https://github.com/Qwerty-Space/AntiDeletedAccountsBot.git AntiDeletedAccountsBot
+git clone https://github.com/Qwerty-Space/AntiDeletedAccountsBot.git
 ```
 
 5.  Run `python stdbot.py`
