@@ -8,22 +8,19 @@ See /help for more info.
 """
 
 from asyncio import sleep
-from .global_functions import log
-from telethon import client, events, errors
+from telethon import events, errors
 
 
 # /start
-@events.register(events.NewMessage(pattern=r"/start$"))
+@borg.on(borg.cmd(pattern=r"/start$"))
 async def on_start(event):
     if event.is_private:    # If command was sent in private
-        await log(event)    # Logs the event
         await event.respond(__doc__, link_preview=False)
 
 
 # Reply when added to group
-@events.register(events.ChatAction(func=lambda e:e.user_added and e.is_group))
+@borg.on(events.ChatAction(func=lambda e:e.user_added and e.is_group))
 async def added_to_group(event):
-    group = await event.get_chat() # Get group object
     me = (await event.client.get_me()).id
 
     response = None
