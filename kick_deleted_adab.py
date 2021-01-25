@@ -8,7 +8,9 @@ from uniborg.util import cooldown
 from telethon import events, sessions, errors, types
 
 
-async def return_deleted(group_id, deleted_admin, deleted_users=set(), filter=None):
+async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=None):
+    if deleted_users is None:
+        deleted_users = set()
     async for user in borg.iter_participants(group_id, filter=filter):
         if not user.deleted: # if it's not a deleted account; ignore
             continue
