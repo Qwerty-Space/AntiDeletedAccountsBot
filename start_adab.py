@@ -12,7 +12,7 @@ from telethon import events, errors
 
 
 # /start
-@borg.on(borg.cmd(pattern=r"/start$"))
+@borg.on(borg.cmd(r"start$"))
 async def on_start(event):
     if event.is_private:    # If command was sent in private
         await event.respond(__doc__, link_preview=False)
