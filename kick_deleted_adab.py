@@ -31,7 +31,6 @@ async def kick_deleted(event):
 
     deleted_group_admins = set()
     deleted_admin = storage.deleted_admin or dict()
-    kick_counter = storage.kick_counter or "0"
     kicked_users = 0 # the amount of kicked users for stats
     response = list() # a list of error responses to delete later
     has_erred = False
@@ -74,6 +73,7 @@ async def kick_deleted(event):
                 +  "Please remove them manually."))
 
     if deleted_group_admins:
+        deleted_admin = storage.deleted_admin
         try:
             deleted_admin[group].update(deleted_group_admins)
         except KeyError:
@@ -82,7 +82,7 @@ async def kick_deleted(event):
     if kicked_users >= 0:
         logger.info(f"{event.chat_id}:  Kicked {kicked_users}")
 
-    kick_counter = int(kick_counter)
+    kick_counter = int(storage.kick_counter) or 0
     storage.kick_counter = str(kick_counter + kicked_users)
 
     if not response:
