@@ -3,9 +3,13 @@
 Will check active groups/channels periodically for deleted accounts, and then kick them.
 """
 
-from asyncio import sleep
+import asyncio
+sleep = asyncio.sleep
 from uniborg.util import cooldown
 from telethon import events, sessions, errors, types
+
+
+group_queue = asyncio.Queue()
 
 
 async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=None):
@@ -25,10 +29,21 @@ async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=Non
 
 
 @borg.on(events.NewMessage(func=lambda e: not e.is_private))
-@cooldown(60 * 60) # Only activate at minimum once an hour
+@cooldown(60 * 60 * 6) # Only activate at minimum once every 6 hours
+async def on_message(event):
+    await group_queue.put(event)
+
+
+@borg.on(borg.cmd(r"stat(s|istics)?$"))
+async def stats(event):
+    if not event.is_private:
+        return
+
+    await event.reply(f"I have kicked a total of `{storage.kick_counter}` deleted accounts.")
+
+
 async def kick_deleted(event):
     group = event.chat_id
-
     deleted_group_admins = set()
     deleted_admin = storage.deleted_admin or dict()
     kicked_users = 0 # the amount of kicked users for stats
@@ -96,9 +111,17 @@ async def kick_deleted(event):
         return
 
 
-@borg.on(borg.cmd(r"stat(s|istics)?$"))
-async def stats(event):
-    if not event.is_private:
-        return
+async def iter_queue():
+    global group_queue
+    while True:
+        event = await group_queue.get()
+        await kick_deleted(event)
 
-    await event.reply(f"I have kicked a total of `{storage.kick_counter}` deleted accounts.")
+
+
+def unload():
+    if group_loop:
+        group_loop.cancel()
+
+
+group_loop = asyncio.ensure_future()
