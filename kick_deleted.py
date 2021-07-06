@@ -124,4 +124,4 @@ def unload():
         group_loop.cancel()
 
 
-group_loop = asyncio.ensure_future()
+group_loop = asyncio.ensure_future(iter_queue())
