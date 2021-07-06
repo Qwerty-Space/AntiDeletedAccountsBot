@@ -94,7 +94,7 @@ async def kick_deleted(event):
         except KeyError:
             deleted_admin[group] = deleted_group_admins
         storage.deleted_admin = deleted_admin
-    if kicked_users >= 0:
+    if kicked_users:
         logger.info(f"{event.chat_id}:  Kicked {kicked_users}")
 
     kick_counter = int(storage.kick_counter) or 0
@@ -118,10 +118,10 @@ async def iter_queue():
         await kick_deleted(event)
 
 
-
 def unload():
     if group_loop:
         group_loop.cancel()
+        await group_loop
 
 
 group_loop = asyncio.ensure_future(iter_queue())
