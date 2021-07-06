@@ -8,28 +8,18 @@ Based on [uniborg](Qwerty-Space/uniborg), a pluggable
 
 
 ## Installation
-1.  Clone uniborg
+1.  Clone the AntiDeletedAccounts Bot branch of Uniborg
 
 ```sh
-git clone https://github.com/Qwerty-Space/uniborg.git AntiDeletedAccountsBot
-cd uniborg
+git clone --single-branch --branch antideletedaccounts https://github.com/Qwerty-Space/uniborg.git AntiDeletedAccountsBot
 ```
 
-2.  Remove unwanted plugins or the plugin directories (stdplugins, and botplugins)
-
-3.  Add your config into config.py, following the instructions in config.example.py
+2.  Add your config into config.py, following the instructions in config.example.py
 
 ```python
 id = 12345  # Your API ID
 hash = "11223344556677889900AABBCCDDEEFF"  # API Hash
 admins = 12346789  # Any "admins" for the bot that will be able to reload the plugins
-```
-
-4.  Clone ADAB
-
-```sh
-cd botplugins
-git clone https://github.com/Qwerty-Space/AntiDeletedAccountsBot.git .
 ```
 
 5.  Run `python stdbot.py`
@@ -38,7 +28,7 @@ git clone https://github.com/Qwerty-Space/AntiDeletedAccountsBot.git .
 ## FAQ
 1.  A user deleted their account, why hasn't the bot kicked them yet?
 
-*  ADAB only checks for deleted accounts ONCE per hour at most.  And it will only check for deleted accounts if a message was sent to the group.  This behaviour will keep the bot from slowing down, and filters out inactive groups.
+*  ADAB only checks for deleted accounts ONCE every 6 hours at most.  And it will only check for deleted accounts if a message was sent to the group.  This behaviour will keep the bot from slowing down too much by filtering out inactive groups.
 
 2.  Does ADAB kick or ban deleted accounts?
 
