@@ -115,7 +115,6 @@ async def kick_deleted(event):
     storage.kick_counter = str(kick_counter + kicked_users)
 
     if not response:
-        logger.info("no response")
         return
 
     await asyncio.sleep(60)
@@ -123,7 +122,6 @@ async def kick_deleted(event):
         for m in response:
             await m.delete()
     except errors.ChannelPrivateError:
-        logger.info("response")
         return
 
 
