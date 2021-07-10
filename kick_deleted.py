@@ -32,8 +32,7 @@ async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=Non
 
 
 @borg.on(events.NewMessage(func=lambda e: not e.is_private))
-# @cooldown(60 * 60 * 6) # Only activate at minimum once every 6 hours
-@cooldown(20)
+@cooldown(60 * 60 * 6) # Only activate at minimum once every 6 hours
 async def on_message(event):
     await group_queue.put(event)
     logger.info(f"{event.chat_id}:  Queued")
