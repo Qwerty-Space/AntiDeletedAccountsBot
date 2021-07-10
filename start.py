@@ -1,5 +1,5 @@
 """This is a bot for kicking deleted accounts from groups.
-I will check for deleted accounts in active groups once an hour, but only if the group is active.
+I will check for deleted accounts in __active__ groups once every 6 hours.
 It requires the `ban user` permission in groups, and any permission in channels.
 
 [Bot support](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/issues)
@@ -8,6 +8,7 @@ See /help for more info.
 """
 
 from asyncio import sleep
+
 from telethon import events, errors
 
 
@@ -28,7 +29,11 @@ async def added_to_group(event):
     # if the bot is amongst them, send the message
     for u in event.users:
         if me == u.id:
-            response = await event.respond(__doc__, link_preview=False)
+            try:
+                response = await event.respond(__doc__, link_preview=False)
+                break
+            except errors.ChatWriteForbiddenError:
+                break
 
     if not response:
         return
