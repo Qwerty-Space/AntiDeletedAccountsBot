@@ -112,7 +112,7 @@ async def kick_deleted(event):
             deleted_admin[group] = deleted_group_admins
         storage.deleted_admin = deleted_admin
 
-    triggered = event.date.strftime('%Y-%m-%d %H:%M:%S')
+    triggered = event.date.strftime('%y-%m-%d %H:%M:%S')
     logger.info(f"{event.chat_id}:  Kicked {kicked_users} / {total_users} {triggered}")
 
     kick_counter = storage.kick_counter or 0
