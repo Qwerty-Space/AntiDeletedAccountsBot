@@ -131,11 +131,12 @@ async def iter_queue():
         event = await group_queue.get()
         logger.info(f"{event.chat_id} event:  {event.date.strftime('%Y-%m-%d %H:%M:%S')}")
         try:
-            await kick_deleted(event)
+            await asyncio.wait_for(kick_deleted(event), 60 * 60 * 2)
         except Error as e:
             tb = traceback.format_exc()
             logger.warn(f"An error occured:\n {tb}")
             await event.send_message(-1001142596298, f"{e}")
+            pass
 
 
 def unload():
