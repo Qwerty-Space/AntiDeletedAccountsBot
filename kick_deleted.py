@@ -3,8 +3,10 @@
 Will check active groups/channels periodically for deleted accounts, and then kick them.
 """
 
+import time
 import logging
 import asyncio
+import traceback
 from datetime import datetime
 
 from uniborg.util import cooldown
@@ -17,6 +19,7 @@ group_queue = asyncio.Queue()
 async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=None, total_users=0):
     if deleted_users is None:
         deleted_users = set()
+
     async for user in borg.iter_participants(group_id, filter=filter):
         if not user.deleted: # if it's not a deleted account; ignore
             total_users += 1
@@ -28,6 +31,7 @@ async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=Non
             pass
 
         deleted_users.add(user.id)
+
     return deleted_users, total_users
 
 
@@ -66,6 +70,17 @@ async def kick_deleted(event):
     except (AttributeError, TypeError):
         pass
 
+    except errors.ChatAdminRequiredError: # if bot doesn't have the right permissions; leave
+        try:
+            response.append(await event.respond(
+                "ChatAdminRequiredError:  "
+                + "I must have the ban user permission to be able to kick deleted accounts."
+                + "Please add me back as an admin."))
+        except errors.ChatWriteForbiddenError:
+            pass
+        logger.info(f"{event.chat_id}:  Invalid permissions, leaving chat")
+        await borg.kick_participant(group, "me")
+
 
     if not deleted_users:
         return
@@ -75,18 +90,6 @@ async def kick_deleted(event):
         try:
             await borg.kick_participant(group, user)
             kicked_users += 1
-
-        except errors.ChatAdminRequiredError: # if bot doesn't have the right permissions to kick accounts; leave
-            try:
-                response.append(await event.respond(
-                    "ChatAdminRequiredError:  "
-                    + "I must have the ban user permission to be able to kick deleted accounts."
-                    + "Please add me back as an admin."))
-            except errors.ChatWriteForbiddenError:
-                pass
-            logger.info(f"{event.chat_id}:  Invalid permissions, leaving chat")
-            await borg.kick_participant(group, "me")
-            break
 
         except errors.UserAdminInvalidError: # if the deleted account is an admin; save the id and send error
             deleted_group_admins.add(f"{user}") # save id
@@ -109,9 +112,13 @@ async def kick_deleted(event):
             deleted_admin[group] = deleted_group_admins
         storage.deleted_admin = deleted_admin
 
-    logger.info(f"{event.chat_id}:  Kicked {kicked_users} / {total_users}")
+    triggered = event.date.strftime('%Y-%m-%d %H:%M:%S')
+    logger.info(f"{event.chat_id}:  Kicked {kicked_users} / {total_users} {triggered}")
 
-    kick_counter = int(storage.kick_counter) or 0
+    kick_counter = storage.kick_counter or 0
+    if kick_counter is None:
+        kick_counter = 0
+    kick_counter = int(kick_counter)
     storage.kick_counter = str(kick_counter + kicked_users)
 
     if not response:
@@ -129,14 +136,16 @@ async def iter_queue():
     global group_queue
     while True:
         event = await group_queue.get()
-        logger.info(f"{event.chat_id} event:  {event.date.strftime('%Y-%m-%d %H:%M:%S')}")
+        a = time.time()
         try:
-            await asyncio.wait_for(kick_deleted(event), 60 * 60 * 2)
-        except Error as e:
+            await kick_deleted(event)
+        except Exception as e:
             tb = traceback.format_exc()
             logger.warn(f"An error occured:\n {tb}")
-            await event.send_message(-1001142596298, f"{e}")
-            pass
+            await borg.send_message(-1001142596298, f"```{e}\n\n{tb}```")
+            continue
+        b = time.time() - a
+        logger.info(f"{event.chat_id}:  Took {b:.3f} seconds")
 
 
 def unload():
