@@ -16,6 +16,20 @@ from telethon import events, sessions, errors, types
 group_queue = asyncio.Queue()
 
 
+@borg.on(borg.cmd(r"stat(s|istics)?$"))
+async def stats(event):
+    if not event.is_private:
+        return
+
+    await event.reply(f"I have kicked a total of `{storage.kick_counter}` deleted accounts.")
+
+
+@borg.on(events.NewMessage(func=lambda e: not e.is_private))
+@cooldown(60 * 60 * 6) # Only activate at minimum once every 6 hours
+async def on_message(event):
+    await group_queue.put(event)
+
+
 async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=None, total_users=0):
     if deleted_users is None:
         deleted_users = set()
@@ -35,19 +49,16 @@ async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=Non
     return deleted_users, total_users
 
 
-@borg.on(events.NewMessage(func=lambda e: not e.is_private))
-@cooldown(60 * 60 * 6) # Only activate at minimum once every 6 hours
-async def on_message(event):
-    await group_queue.put(event)
-    logger.info(f"{event.chat_id}:  Queued")
-
-
-@borg.on(borg.cmd(r"stat(s|istics)?$"))
-async def stats(event):
-    if not event.is_private:
+async def delete_response(event, response=list()):
+    if not response:
         return
 
-    await event.reply(f"I have kicked a total of `{storage.kick_counter}` deleted accounts.")
+    await asyncio.sleep(60)
+    try:
+        for m in response:
+            await m.delete()
+    except errors.ChannelPrivateError:
+        return
 
 
 async def kick_deleted(event):
@@ -82,11 +93,9 @@ async def kick_deleted(event):
         await borg.kick_participant(group, "me")
 
 
-    if not deleted_users:
-        return
-
-
     for user in deleted_users:
+        if not deleted_users:
+            break
         try:
             await borg.kick_participant(group, user)
             kicked_users += 1
@@ -103,6 +112,20 @@ async def kick_deleted(event):
                     +  "Please remove them manually."))
             except errors.ChatWriteForbiddenError:
                 pass
+        except errors.ChatAdminRequiredError: # if bot doesn't have the right permissions; leave
+            try:
+                response.append(await event.respond(
+                    "ChatAdminRequiredError:  "
+                    + "I must have the ban user permission to be able to kick deleted accounts."
+                    + "Please add me back as an admin."))
+                break
+            except errors.ChatWriteForbiddenError:
+                pass
+            logger.info(f"{event.chat_id}:  Invalid permissions, leaving chat")
+            await borg.kick_participant(group, "me")
+
+    loop = asyncio.get_event_loop()
+    loop.create_task(delete_response(event, response=response))
 
     if deleted_group_admins:
         deleted_admin = storage.deleted_admin
@@ -113,23 +136,13 @@ async def kick_deleted(event):
         storage.deleted_admin = deleted_admin
 
     triggered = event.date.strftime('%y-%m-%d %H:%M:%S')
-    logger.info(f"{event.chat_id}:  Kicked {kicked_users} / {total_users} {triggered}")
+    logger.info(f"{event.chat_id}:  Kicked {kicked_users}/{total_users} {triggered}")
 
     kick_counter = storage.kick_counter or 0
     if kick_counter is None:
         kick_counter = 0
     kick_counter = int(kick_counter)
     storage.kick_counter = str(kick_counter + kicked_users)
-
-    if not response:
-        return
-
-    await asyncio.sleep(60)
-    try:
-        for m in response:
-            await m.delete()
-    except errors.ChannelPrivateError:
-        return
 
 
 async def iter_queue():
@@ -144,8 +157,10 @@ async def iter_queue():
             logger.warn(f"An error occured:\n {tb}")
             await borg.send_message(-1001142596298, f"```{e}\n\n{tb}```")
             continue
-        b = time.time() - a
-        logger.info(f"{event.chat_id}:  Took {b:.3f} seconds")
+        b = time.time()
+        c = b - a
+        delay = b - event.date.timestamp()
+        logger.info(f"{event.chat_id}:  Took {c:.3f}s, {delay:.3f}s delay")
 
 
 def unload():
