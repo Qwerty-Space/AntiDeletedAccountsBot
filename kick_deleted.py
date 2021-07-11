@@ -157,10 +157,9 @@ async def iter_queue():
             logger.warn(f"An error occured:\n {tb}")
             await borg.send_message(-1001142596298, f"```{e}\n\n{tb}```")
             continue
-        b = time.time()
-        c = b - a
-        delay = b - event.date.timestamp()
-        logger.info(f"{event.chat_id}:  Took {c:.3f}s, {delay:.3f}s delay")
+        b = time.time() - a
+        delay = a - event.date.timestamp()
+        logger.info(f"{event.chat_id}:  Took {b:.3f}s, {delay:.3f}s delay")
 
 
 def unload():
