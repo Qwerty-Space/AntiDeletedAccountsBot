@@ -78,6 +78,7 @@ async def kick_deleted(event):
             )
         deleted_users.update(new_deleted)
     except (AttributeError, TypeError):
+        total_users = sub_total
         pass
 
     except errors.ChatAdminRequiredError: # if bot doesn't have the right permissions; leave
