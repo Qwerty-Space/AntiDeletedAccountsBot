@@ -77,7 +77,7 @@ async def kick_deleted(event):
             types.ChannelParticipantsKicked, total_users
             )
         deleted_users.update(new_deleted)
-        total_users += total_users
+        total_users += new_total
     except (AttributeError, TypeError):
         pass
 
