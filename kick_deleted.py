@@ -85,7 +85,7 @@ async def kick_deleted(event):
         try:
             response.append(await event.respond(
                 "ChatAdminRequiredError:  "
-                + "I must have the ban user permission to be able to kick deleted accounts."
+                + "I must have the ban user permission to be able to kick deleted accounts.  "
                 + "Please add me back as an admin."))
         except errors.ChatWriteForbiddenError:
             pass
@@ -108,7 +108,7 @@ async def kick_deleted(event):
             try:
                 response.append(await event.respond(
                     "UserAdminInvalidError:  "
-                    + "An admin has deleted their account, so I cannot kick it from the group."
+                    + "An admin has deleted their account, so I cannot kick it from the group.  "
                     +  "Please remove them manually."))
             except errors.ChatWriteForbiddenError:
                 pass
@@ -116,7 +116,7 @@ async def kick_deleted(event):
             try:
                 response.append(await event.respond(
                     "ChatAdminRequiredError:  "
-                    + "I must have the ban user permission to be able to kick deleted accounts."
+                    + "I must have the ban user permission to be able to kick deleted accounts.  "
                     + "Please add me back as an admin."))
                 break
             except errors.ChatWriteForbiddenError:
