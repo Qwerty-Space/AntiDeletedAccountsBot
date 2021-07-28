@@ -39,7 +39,7 @@ async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=Non
             total_users += 1
             continue
         try:
-            if user.id in deleted_admin[group_id]: # if the account is known to be an admin; ignore
+            if str(user.id) in deleted_admin[group_id]: # if the account is known to be an admin; ignore
                 continue
         except KeyError:
             pass
