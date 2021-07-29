@@ -49,6 +49,18 @@ async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=Non
     return deleted_users, total_users
 
 
+async def leave_chat(event, group_id):
+    deleted_admin = storage.deleted_admin or dict()
+
+    deleted_admin.discard([str(group_id)])
+    try:
+        await borg.kick_participant(group_id, "me")
+    except errors.UserNotParticipantError:
+        pass
+
+    storage.deleted_admin = deleted_admin
+
+
 async def delete_response(event, response=list()):
     if not response:
         return
@@ -86,11 +98,10 @@ async def kick_deleted(event):
                 "ChatAdminRequiredError:  "
                 + "I must have the ban user permission to be able to kick deleted accounts.  "
                 + "Please add me back as an admin."))
-        except errors.ChatWriteForbiddenError:
+        except (errors.ChatWriteForbiddenError, errors.ChatAdminRequiredError):
             pass
         logger.info(f"{event.chat_id}:  Invalid permissions, leaving chat")
-        await borg.kick_participant(group, "me")
-
+        await leave_chat(event, group)
 
     for user in deleted_users:
         if not deleted_users:
@@ -109,7 +120,7 @@ async def kick_deleted(event):
                     "UserAdminInvalidError:  "
                     + "An admin has deleted their account, so I cannot kick it from the group.  "
                     +  "Please remove them manually."))
-            except errors.ChatWriteForbiddenError:
+            except (errors.ChatWriteForbiddenError, errors.ChatAdminRequiredError):
                 pass
         except errors.ChatAdminRequiredError: # if bot doesn't have the right permissions; leave
             try:
@@ -118,10 +129,10 @@ async def kick_deleted(event):
                     + "I must have the ban user permission to be able to kick deleted accounts.  "
                     + "Please add me back as an admin."))
                 break
-            except errors.ChatWriteForbiddenError:
+            except (errors.ChatWriteForbiddenError, errors.ChatAdminRequiredError):
                 pass
             logger.info(f"{event.chat_id}:  Invalid permissions, leaving chat")
-            await borg.kick_participant(group, "me")
+            await leave_chat(event, group)
 
     loop = asyncio.get_event_loop()
     loop.create_task(delete_response(event, response=response))
