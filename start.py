@@ -1,9 +1,13 @@
 """This is a bot for kicking deleted accounts from groups.
 I will check for deleted accounts in __active__ groups once every 6 hours.
-It requires the `ban user` permission in groups, and any permission in channels.
+I require the `ban user` permission in groups, and any permission in channels.
 
-[Bot support](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/issues)
+I might take a few minutes to work the first time you add me to a group, so please be patient.
+
+[Bot support](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/discussions)
+[Bug reporting](https://github.com/Qwerty-Space/AntiDeletedAccountsBot/issues)
 [Announcements & Updates](https://t.me/joinchat/AAAAAFFqkyB7YPH6RtPbgw)
+
 See /help for more info.
 """
 
