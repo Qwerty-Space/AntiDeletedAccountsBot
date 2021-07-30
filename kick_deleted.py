@@ -53,7 +53,7 @@ async def leave_chat(event, group_id):
     deleted_admin = storage.deleted_admin or dict()
 
     try:
-        deleted_admin.pop([str(group_id)])
+        deleted_admin.pop(str(group_id))
     KeyError:
         pass
 
