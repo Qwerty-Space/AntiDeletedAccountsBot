@@ -52,7 +52,11 @@ async def return_deleted(group_id, deleted_admin, deleted_users=None, filter=Non
 async def leave_chat(event, group_id):
     deleted_admin = storage.deleted_admin or dict()
 
-    deleted_admin.discard([str(group_id)])
+    try:
+        deleted_admin.pop([str(group_id)])
+    KeyError:
+        pass
+
     try:
         await borg.kick_participant(group_id, "me")
     except errors.UserNotParticipantError:
