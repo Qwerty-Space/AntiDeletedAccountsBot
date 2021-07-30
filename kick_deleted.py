@@ -126,7 +126,10 @@ async def kick_deleted(event):
                     +  "Please remove them manually."))
             except (errors.ChatWriteForbiddenError, errors.ChatAdminRequiredError):
                 pass
-        except (errors.ChatAdminRequiredError, errors.ChannelPrivateError): # if bot doesn't have the right permissions; leave
+        except (errors.ChatAdminRequiredError,
+                errors.ChannelPrivateError,
+                errors.ChatWriteForbiddenError
+                ): # if bot doesn't have the right permissions; leave
             try:
                 response.append(await event.respond(
                     "ChatAdminRequiredError:  "
