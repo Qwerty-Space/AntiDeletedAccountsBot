@@ -54,7 +54,7 @@ async def leave_chat(event, group_id):
 
     try:
         deleted_admin.pop(str(group_id))
-    KeyError:
+    except KeyError:
         pass
 
     try:
