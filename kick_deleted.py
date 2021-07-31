@@ -85,14 +85,14 @@ async def kick_deleted(event):
     response = list() # a list of error responses to delete later
     has_erred = False
 
-    # iterate over users
-    deleted_users, total_users = await return_deleted(group, deleted_admin=deleted_admin)
     try:
+        # iterate over users
+        deleted_users, total_users = await return_deleted(group, deleted_admin)
+
         # iterate over banned users
-        new_deleted, total_users = await return_deleted(group, deleted_admin, deleted_users,
+        deleted_users, total_users = await return_deleted(group, deleted_admin, deleted_users,
             types.ChannelParticipantsKicked, total_users
             )
-        deleted_users.update(new_deleted)
     except (AttributeError, TypeError):
         pass
 
