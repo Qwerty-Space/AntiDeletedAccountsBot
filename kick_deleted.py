@@ -59,7 +59,7 @@ async def leave_chat(event, group_id):
 
     try:
         await borg.kick_participant(group_id, "me")
-    except errors.UserNotParticipantError:
+    except (errors.UserNotParticipantError, errors.ChannelPrivateError):
         pass
 
     storage.deleted_admin = deleted_admin
