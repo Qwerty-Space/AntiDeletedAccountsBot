@@ -183,10 +183,9 @@ async def iter_queue():
 
 
 def unload():
-    for group_loop in loops:
+    if group_loop:
         group_loop.cancel()
         group_loop
 
-loops = []
-for i in range(3):
-    group_loop = asyncio.ensure_future(iter_queue())
+
+group_loop = asyncio.ensure_future(iter_queue())
