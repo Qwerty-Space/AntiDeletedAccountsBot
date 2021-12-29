@@ -102,7 +102,7 @@ async def kick_deleted(event):
                 "ChatAdminRequiredError:  "
                 + "I must have the ban user permission to be able to kick deleted accounts.  "
                 + "Please add me back as an admin."))
-        except (errors.ChatWriteForbiddenError, errors.ChatAdminRequiredError):
+        except (errors.ChatWriteForbiddenError, errors.ChatAdminRequiredError, errors.ChannelPrivateError):
             pass
         logger.info(f"{event.chat_id}:  Invalid permissions, leaving chat")
         await leave_chat(event, group)
