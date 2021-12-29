@@ -25,7 +25,7 @@ async def stats(event):
 
 
 @borg.on(events.NewMessage(func=lambda e: not e.is_private))
-@cooldown(60 * 60 * 6) # Only activate at minimum once every 6 hours
+@cooldown(60 * 60 * 24) # Only activate at minimum once a day
 async def on_message(event):
     await group_queue.put(event)
 
