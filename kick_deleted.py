@@ -93,8 +93,11 @@ async def kick_deleted(event):
         deleted_users, total_users = await return_deleted(group, deleted_admin, deleted_users,
             types.ChannelParticipantsKicked, total_users
             )
-    except (AttributeError, TypeError):
-        pass
+    except (AttributeError, TypeError) as e:
+        tb = traceback.format_exc()
+        logger.warn(f"{event.chat_id}:  \n{tb}")
+        await borg.send_message(-1001142596298, f"```{e}\n\n{tb}\n\n{deleted_users}```")
+        return
 
     except (errors.ChatAdminRequiredError, errors.ChannelPrivateError): # if bot doesn't have the right permissions; leave
         try:
