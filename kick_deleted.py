@@ -94,6 +94,7 @@ async def kick_deleted(event):
             types.ChannelParticipantsKicked, total_users
             )
     except (AttributeError, TypeError):
+        # some dumb telegram thing
         return
 
     except (errors.ChatAdminRequiredError, errors.ChannelPrivateError): # if bot doesn't have the right permissions; leave
